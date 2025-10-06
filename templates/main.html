@@ -1,6 +1,102 @@
 {% extends "./base.html" %}
 
+{% include 'header.html' %}
+
 {% block body %}
 <h1>Bienvenido a la Tienda Nelli</h1>
 <p>Explora nuestros productos y ofertas especiales.</p>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <img src="{{ url_for('static', filename='images/product1.jpg') }}" class="card-img-top" alt="Producto 1">
+      <div class="card-body">
+        <h5 class="card-title">Producto 1</h5>
+        <p class="card-text">Descripción breve del producto 1.</p>
+        <a href="#" class="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <img src="{{ url_for('static', filename='images/product2.jpg') }}" class="card-img-top" alt="Producto 2">
+      <div class="card-body">
+        <h5 class="card-title">Producto 2</h5>
+        <p class="card-text">Descripción breve del producto 2.</p>
+        <a href="#" class="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <img src="{{ url_for('static', filename='images/product3.jpg') }}" class="card-img-top" alt="Producto 3">
+      <div class="card-body">
+        <h5 class="card-title">Producto 3</h5>
+        <p class="card-text">Descripción breve del producto 3.</p>
+        <a href="#" class="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <img src="{{ url_for('static', filename='images/product1.jpg') }}" class="card-img-top" alt="Producto 1">
+      <div class="card-body">
+        <h5 class="card-title">Producto 1</h5>
+        <p class="card-text">Descripción breve del producto 1.</p>
+        <a href="#" class="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <img src="{{ url_for('static', filename='images/product2.jpg') }}" class="card-img-top" alt="Producto 2">
+      <div class="card-body">
+        <h5 class="card-title">Producto 2</h5>
+        <p class="card-text">Descripción breve del producto 2.</p>
+        <a href="#" class="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <img src="{{ url_for('static', filename='images/product3.jpg') }}" class="card-img-top" alt="Producto 3">
+      <div class="card-body">
+        <h5 class="card-title">Producto 3</h5>
+        <p class="card-text">Descripción breve del producto 3.</p>
+        <a href="#" class="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <img src="{{ url_for('static', filename='images/product1.jpg') }}" class="card-img-top" alt="Producto 1">
+      <div class="card-body">
+        <h5 class="card-title">Producto 1</h5>
+        <p class="card-text">Descripción breve del producto 1.</p>
+        <a href="#" class="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <img src="{{ url_for('static', filename='images/product2.jpg') }}" class="card-img-top" alt="Producto 2">
+      <div class="card-body">
+        <h5 class="card-title">Producto 2</h5>
+        <p class="card-text">Descripción breve del producto 2.</p>
+        <a href="#" class="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <img src="{{ url_for('static', filename='images/product3.jpg') }}" class="card-img-top" alt="Producto 3">
+      <div class="card-body">
+        <h5 class="card-title">Producto 3</h5>
+        <p class="card-text">Descripción breve del producto 3.</p>
+        <a href="#" class="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
