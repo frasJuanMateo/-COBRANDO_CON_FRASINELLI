@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% include 'header.html' %}
+{% block body %}
+<h2>Iniciar sesión</h2>
+<form method="POST">
+  {{ form.hidden_tag() }}
+  {{ form.email.label }} {{ form.email(class_="form-control") }}
+  {{ form.password.label }} {{ form.password(class_="form-control") }}
+  {{ form.submit(class_="btn btn-primary mt-3") }}
+</form>
+{% endblock %}
