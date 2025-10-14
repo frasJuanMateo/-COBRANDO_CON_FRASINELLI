@@ -8,7 +8,7 @@ from py.rutas import rutas
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:461315@localhost/tienda_online'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost/tienda_online'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'clave_super_secreta'
 
@@ -21,10 +21,6 @@ login_manager.login_view = 'rutas.login'
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
-
-@app.route('/')
-def main():
-    return render_template('main.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -21,3 +21,13 @@ class Usuario(UserMixin, db.Model):
     def check_password(self, password):
         from werkzeug.security import check_password_hash
         return check_password_hash(self.password_hash, password)
+    
+class Producto(db.Model):
+    __tablename__ = 'productos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    descripcion = db.Column(db.String(255), nullable=True)
+    precio = db.Column(db.Float, nullable=False)
+    stock = db.Column(db.Integer, nullable=False, default=0)
+    fecha_creacion = db.Column(db.DateTime, server_default=db.func.now())

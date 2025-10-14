@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from py.db import db
-from py.db import Usuario
+from py.db import Usuario, Producto
 from py.forms import RegistroForm, LoginForm
 
 rutas = Blueprint('rutas', __name__)
@@ -40,3 +40,8 @@ def logout():
 @login_required
 def dashboard():
     return render_template('dashboard.html')
+
+@rutas.route('/')
+def main():
+    productos = Producto.query.all()
+    return render_template('main.html', productos=productos)
