@@ -64,6 +64,7 @@ def mostrar_imagen(imagen_id):
 def nuevo_producto():
     form = ProductoForm()
     if form.validate_on_submit():
+        # Crear producto
         producto = Producto(
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
@@ -74,21 +75,21 @@ def nuevo_producto():
         db.session.add(producto)
         db.session.commit()
 
-        # Guardar imagen en la base de datos (como bytes)
+        # Guardar varias imágenes en BLOB
         if form.imagenes.data:
-            archivo = form.imagenes.data
-            nombre_seguro = secure_filename(archivo.filename)
-            datos_bytes = archivo.read()  # Leemos el contenido binario
-
-            nueva_img = Imagen(
-                nombre_archivo=nombre_seguro,
-                datos=datos_bytes,
-                producto_id=producto.id
-            )
-            db.session.add(nueva_img)
+            for archivo in form.imagenes.data:
+                if archivo:  # evita errores si algún campo viene vacío
+                    nombre_seguro = secure_filename(archivo.filename)
+                    datos_bytes = archivo.read()
+                    nueva_img = Imagen(
+                        nombre_archivo=nombre_seguro,
+                        datos=datos_bytes,
+                        producto_id=producto.id
+                    )
+                    db.session.add(nueva_img)
             db.session.commit()
 
-        flash('Producto creado exitosamente con imagen.', 'success')
+        flash('Producto creado con imágenes correctamente.', 'success')
         return redirect(url_for('rutas.dashboard'))
 
     return render_template('nuevo_producto.html', form=form)

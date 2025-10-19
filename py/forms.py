@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, DecimalField, IntegerField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, NumberRange
-from flask_wtf.file import FileField, FileAllowed, FileRequired
+from flask_wtf.file import FileField, FileAllowed, FileRequired, MultipleFileField
 
 class RegistroForm(FlaskForm):
     nombre = StringField('Nombre', validators=[DataRequired(), Length(min=3, max=100)])
@@ -22,11 +22,7 @@ class ProductoForm(FlaskForm):
     descripcion = TextAreaField('Descripción', validators=[Length(max=500)])
     precio = DecimalField('Precio', validators=[DataRequired(), NumberRange(min=0)])
     stock = IntegerField('Stock', validators=[DataRequired(), NumberRange(min=0)])
-    
-    # Este campo permitirá seleccionar varias imágenes
-    imagenes = FileField(
-        'Seleccionar imágenes',
-        validators=[FileAllowed(['jpg', 'jpeg', 'png'], 'Solo se permiten imágenes.')]
-    )
-
+    imagenes = MultipleFileField('Imágenes del producto', validators=[
+        FileAllowed(['jpg', 'jpeg', 'png'], 'Solo se permiten imágenes.')
+    ])
     submit = SubmitField('Publicar producto')

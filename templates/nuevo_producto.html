@@ -30,8 +30,8 @@
 
     <div class="mb-3">
       {{ form.imagenes.label(class_="form-label") }}
-      {{ form.imagenes(class_="form-control") }}
-      <small class="text-muted">Formatos permitidos: .jpg, .png, .jpeg</small>
+      {{ form.imagenes(class_="form-control", multiple=True) }}
+      <small class="text-muted">Puedes seleccionar varias imágenes (JPG o PNG)</small>
     </div>
 
     <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
