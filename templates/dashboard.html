@@ -1,42 +1,39 @@
-{% extends "base.html" %}
-
-{% include 'header.html' %}
-
-{% block body %}
+{% extends "base.html" %} {% include 'header.html' %} {% block body %}
 <div class="container mt-4">
   <h2>Bienvenido, {{ current_user.nombre }} 👋</h2>
   <p class="lead">Este es tu panel principal en la Tienda Nelli.</p>
 
   <div class="row mt-4">
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">💰 Simulador de cobro</h5>
-          <p class="card-text">Practica operaciones de cobro y manejo de dinero.</p>
-          <a href="{{ url_for('rutas.dashboard') }}" class="btn btn-primary">Abrir simulador</a>
-        </div>
-      </div>
-    </div>
 
     <div class="col-md-4">
       <div class="card shadow-sm">
         <div class="card-body">
-          <h5 class="card-title">🛒 Ver productos</h5>
-          <p class="card-text">Explora el catálogo de productos disponibles.</p>
-          <a href="{{ url_for('rutas.dashboard') }}" class="btn btn-success">Ir a productos</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">👤 Mi perfil</h5>
-          <p class="card-text">Consulta tus datos y preferencias.</p>
-          <a href="#" class="btn btn-secondary">Ver perfil</a>
+          <h5 class="card-title">➕ Nuevo producto</h5>
+          <p class="card-text">Publica un nuevo producto en tu tienda.</p>
+          <a
+            href="{{ url_for('rutas.nuevo_producto') }}"
+            class="btn btn-primary"
+            >Crear producto</a
+          >
         </div>
       </div>
     </div>
   </div>
+
+  {% for producto in productos %}
+    {% if producto.usuario_id == current_user.id %}
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <img src="{{ url_for('static', filename='images/product1.jpg') }}" class="card-img-top" alt="Producto {{producto.id}}">
+          <div class="card-body">
+            <h5 class="card-title">{{producto.nombre}}</h5>
+            <p class="card-text">{{producto.descripcion}}</p>
+            <h2 class="card-text"><strong>${{producto.precio}}</strong></h2>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+
 </div>
 {% endblock %}

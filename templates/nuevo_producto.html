@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container mt-4">
+  <h2>🆕 Crear nuevo producto</h2>
+  <p class="text-muted">Se asociará a tu cuenta: <strong>{{ current_user.nombre }}</strong></p>
+
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+      {{ form.nombre.label(class_="form-label") }}
+      {{ form.nombre(class_="form-control") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.descripcion.label(class_="form-label") }}
+      {{ form.descripcion(class_="form-control", rows="4") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.precio.label(class_="form-label") }}
+      {{ form.precio(class_="form-control") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.stock.label(class_="form-label") }}
+      {{ form.stock(class_="form-control") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.imagenes.label(class_="form-label") }}
+      {{ form.imagenes(class_="form-control") }}
+      <small class="text-muted">Formatos permitidos: .jpg, .png, .jpeg</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+    <a href="{{ url_for('rutas.dashboard') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

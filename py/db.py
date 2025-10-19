@@ -22,12 +22,27 @@ class Usuario(UserMixin, db.Model):
         from werkzeug.security import check_password_hash
         return check_password_hash(self.password_hash, password)
     
+
 class Producto(db.Model):
     __tablename__ = 'productos'
 
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
-    descripcion = db.Column(db.String(255), nullable=True)
-    precio = db.Column(db.Float, nullable=False)
+    descripcion = db.Column(db.Text, nullable=True)
+    precio = db.Column(db.Numeric(10, 2), nullable=False)
     stock = db.Column(db.Integer, nullable=False, default=0)
     fecha_creacion = db.Column(db.DateTime, server_default=db.func.now())
+
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'))
+    usuario = db.relationship('Usuario', backref='productos')
+    
+class Imagen(db.Model):
+    __tablename__ = 'imagenes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre_archivo = db.Column(db.String(255))
+    datos = db.Column(db.LargeBinary, nullable=False)  # Aquí guardamos los bytes
+    fecha_subida = db.Column(db.DateTime, server_default=db.func.now())
+
+    producto_id = db.Column(db.Integer, db.ForeignKey('productos.id'), nullable=False)
+    producto = db.relationship('Producto', backref='imagenes')

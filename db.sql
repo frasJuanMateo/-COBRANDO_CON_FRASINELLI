@@ -28,3 +28,17 @@ CREATE TABLE carritos (
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
+
+ALTER TABLE productos
+ADD COLUMN usuario_id INT,
+ADD FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE;
+
+CREATE TABLE imagenes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    producto_id INT NOT NULL,
+    nombre_archivo VARCHAR(255),
+    datos LONGBLOB NOT NULL,
+    fecha_subida TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
+);
+

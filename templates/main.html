@@ -8,16 +8,22 @@
 
 <div class="row">
   {% for producto in productos %}
-  <div class="col-md-4">
-    <div class="card mb-4">
-      <img src="{{ url_for('static', filename='images/product1.jpg') }}" class="card-img-top" alt="Producto {{producto.id}}">
-      <div class="card-body">
-        <h5 class="card-title">{{producto.nombre}}</h5>
-        <p class="card-text">{{producto.descripcion}}</p>
-        <p class="card-text"><strong>Precio:</strong> ${{producto.precio}}</p>
+    <div class="col-md-4">
+      <div class="card mb-4">
+        {% if producto.imagenes %}
+          <img src="{{ url_for('rutas.mostrar_imagen', imagen_id=producto.imagenes[0].id) }}"
+               class="card-img-top" alt="Imagen de {{ producto.nombre }}">
+        {% else %}
+          <img src="{{ url_for('static', filename='images/product-placeholder.jpg') }}"
+               class="card-img-top" alt="Producto sin imagen">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ producto.nombre }}</h5>
+          <p class="card-text">{{ producto.descripcion }}</p>
+          <h2 class="card-text"><strong>${{ producto.precio }}</strong></h2>
+        </div>
       </div>
     </div>
-  </div>
   {% endfor %}
 </div>
 

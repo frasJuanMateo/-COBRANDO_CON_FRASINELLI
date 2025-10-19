@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required
+from flask import Blueprint, render_template, redirect, url_for, flash, send_file, make_response
+from flask_login import login_user, logout_user, login_required, current_user
 from py.db import db
-from py.db import Usuario, Producto
-from py.forms import RegistroForm, LoginForm
+from py.db import Usuario, Producto, Imagen
+from werkzeug.utils import secure_filename
+from py.forms import RegistroForm, LoginForm, ProductoForm
+import io
 
 rutas = Blueprint('rutas', __name__)
 
@@ -39,9 +41,54 @@ def logout():
 @rutas.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    productos = Producto.query.all()
+    return render_template('dashboard.html', productos=productos)
 
 @rutas.route('/')
 def main():
     productos = Producto.query.all()
     return render_template('main.html', productos=productos)
+
+@rutas.route('/imagen/<int:imagen_id>')
+def mostrar_imagen(imagen_id):
+    imagen = Imagen.query.get_or_404(imagen_id)
+    # Convertimos los bytes a un stream
+    return send_file(
+        io.BytesIO(imagen.datos),
+        mimetype='image/jpeg',  # o 'image/png' si usás varios tipos
+        download_name=imagen.nombre_archivo
+    )
+
+@rutas.route('/nuevo_producto', methods=['GET', 'POST'])
+@login_required
+def nuevo_producto():
+    form = ProductoForm()
+    if form.validate_on_submit():
+        producto = Producto(
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            precio=form.precio.data,
+            stock=form.stock.data,
+            usuario_id=current_user.id
+        )
+        db.session.add(producto)
+        db.session.commit()
+
+        # Guardar imagen en la base de datos (como bytes)
+        if form.imagenes.data:
+            archivo = form.imagenes.data
+            nombre_seguro = secure_filename(archivo.filename)
+            datos_bytes = archivo.read()  # Leemos el contenido binario
+
+            nueva_img = Imagen(
+                nombre_archivo=nombre_seguro,
+                datos=datos_bytes,
+                producto_id=producto.id
+            )
+            db.session.add(nueva_img)
+            db.session.commit()
+
+        flash('Producto creado exitosamente con imagen.', 'success')
+        return redirect(url_for('rutas.dashboard'))
+
+    return render_template('nuevo_producto.html', form=form)
