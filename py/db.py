@@ -46,3 +46,15 @@ class Imagen(db.Model):
 
     producto_id = db.Column(db.Integer, db.ForeignKey('productos.id'), nullable=False)
     producto = db.relationship('Producto', backref='imagenes')
+    
+class Carrito(db.Model):
+    __tablename__ = 'carritos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'))
+    producto_id = db.Column(db.Integer, db.ForeignKey('productos.id'))
+    cantidad = db.Column(db.Integer, default=1)
+    fecha_creacion = db.Column(db.DateTime, server_default=db.func.now())
+
+    usuario = db.relationship('Usuario', backref='carrito')
+    producto = db.relationship('Producto', backref='en_carritos')   

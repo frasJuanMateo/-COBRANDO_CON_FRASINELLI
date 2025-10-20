@@ -3,10 +3,10 @@
   <nav>
     <a href="/" class="text-white mx-2">Inicio</a>
     <a href="/products" class="text-white mx-2">Productos</a>
-    <a href="/contact" class="text-white mx-2">Contacto</a>
+    <a href="/dashboard" class="text-white mx-2">Dashboard</a>
 
     {% if current_user.is_authenticated %}
-      <span class="mx-3">👋 Hola, {{ current_user.nombre }}</span>
+      <span class="mx-3">Aloha, {{ current_user.nombre }}</span>
       <a href="{{ url_for('rutas.logout') }}" class="btn btn-sm btn-outline-light">Cerrar sesión</a>
     {% else %}
       <a href="{{ url_for('rutas.login') }}" class="btn btn-sm btn-light mx-1">Iniciar sesión</a>

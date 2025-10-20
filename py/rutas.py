@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, send_file, make_response
+from flask import Blueprint, render_template, redirect, url_for, flash, send_file, make_response, request
 from flask_login import login_user, logout_user, login_required, current_user
 from py.db import db
 from py.db import Usuario, Producto, Imagen
@@ -64,7 +64,7 @@ def mostrar_imagen(imagen_id):
 def nuevo_producto():
     form = ProductoForm()
     if form.validate_on_submit():
-        # Crear producto
+        # Crear el producto
         producto = Producto(
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
@@ -75,12 +75,12 @@ def nuevo_producto():
         db.session.add(producto)
         db.session.commit()
 
-        # Guardar varias imágenes en BLOB
+        # Guardar cada imagen subida
         if form.imagenes.data:
             for archivo in form.imagenes.data:
-                if archivo:  # evita errores si algún campo viene vacío
+                if archivo and archivo.filename != '':
                     nombre_seguro = secure_filename(archivo.filename)
-                    datos_bytes = archivo.read()
+                    datos_bytes = archivo.read()  # leer contenido binario
                     nueva_img = Imagen(
                         nombre_archivo=nombre_seguro,
                         datos=datos_bytes,
@@ -89,7 +89,35 @@ def nuevo_producto():
                     db.session.add(nueva_img)
             db.session.commit()
 
-        flash('Producto creado con imágenes correctamente.', 'success')
+        flash('Producto creado exitosamente con sus imágenes.', 'success')
         return redirect(url_for('rutas.dashboard'))
 
     return render_template('nuevo_producto.html', form=form)
+
+@rutas.route('/producto/<int:producto_id>')
+def producto(producto_id):
+    producto = Producto.query.get_or_404(producto_id)
+    return render_template('producto.html', producto=producto)
+
+@rutas.route('/agregar_al_carrito/<int:producto_id>', methods=['POST'])
+@login_required
+def agregar_al_carrito(producto_id):
+    producto = Producto.query.get_or_404(producto_id)
+    cantidad = int(request.form.get('cantidad', 1))
+
+    # Verificar stock
+    if cantidad > producto.stock:
+        flash('No hay suficiente stock disponible.', 'danger')
+        return redirect(url_for('rutas.ver_producto', producto_id=producto.id))
+
+    # Crear registro en la tabla carrito
+    nuevo_item = Carrito(
+        usuario_id=current_user.id,
+        producto_id=producto.id,
+        cantidad=cantidad
+    )
+    db.session.add(nuevo_item)
+    db.session.commit()
+
+    flash(f'Se añadió {cantidad} unidad(es) de "{producto.nombre}" al carrito.', 'success')
+    return redirect(url_for('rutas.ver_producto', producto_id=producto.id))

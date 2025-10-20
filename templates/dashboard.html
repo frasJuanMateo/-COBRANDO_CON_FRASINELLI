@@ -4,7 +4,6 @@
   <p class="lead">Este es tu panel principal en la Tienda Nelli.</p>
 
   <div class="row mt-4">
-
     <div class="col-md-4">
       <div class="card shadow-sm">
         <div class="card-body">
@@ -20,20 +19,31 @@
     </div>
   </div>
 
-  {% for producto in productos %}
-    {% if producto.usuario_id == current_user.id %}
-      <div class="col-md-4">
-        <div class="card mb-4">
-          <img src="{{ url_for('static', filename='images/product1.jpg') }}" class="card-img-top" alt="Producto {{producto.id}}">
-          <div class="card-body">
-            <h5 class="card-title">{{producto.nombre}}</h5>
-            <p class="card-text">{{producto.descripcion}}</p>
-            <h2 class="card-text"><strong>${{producto.precio}}</strong></h2>
-          </div>
-        </div>
+  {% for producto in productos %} 
+  {% if producto.usuario_id == current_user.id %}
+  <a href="{{ url_for('rutas.producto', producto_id=producto.id) }}">
+    <div class="col-md-4">
+    <div class="card mb-4">
+      {% if producto.imagenes %}
+      <img
+        src="{{ url_for('rutas.mostrar_imagen', imagen_id=producto.imagenes[0].id) }}"
+        class="card-img-top"
+        alt="Imagen de {{ producto.nombre }}"
+      />
+      {% else %}
+      <img
+        src="{{ url_for('static', filename='images/product-placeholder.jpg') }}"
+        class="card-img-top"
+        alt="Producto sin imagen"
+      />
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{ producto.nombre }}</h5>
+        <p class="card-text">{{ producto.descripcion[:100] }}...</p>
+        <h4 class="text-success"><strong>${{ producto.precio }}</strong></h4>
       </div>
-    {% endif %}
-  {% endfor %}
-
+    </div>
+  </div></a>
+  {% endif %} {% endfor %}
 </div>
 {% endblock %}

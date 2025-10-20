@@ -1,29 +1,32 @@
-{% extends "./base.html" %}
-
-{% include 'header.html' %}
-
-{% block body %}
+{% extends "./base.html" %} {% include 'header.html' %} {% block body %}
 <h1>Bienvenido a la Tienda Nelli</h1>
 <p>Explora nuestros productos y ofertas especiales.</p>
 
 <div class="row">
   {% for producto in productos %}
     <div class="col-md-4">
-      <div class="card mb-4">
-        {% if producto.imagenes %}
-          <img src="{{ url_for('rutas.mostrar_imagen', imagen_id=producto.imagenes[0].id) }}"
-               class="card-img-top" alt="Imagen de {{ producto.nombre }}">
-        {% else %}
-          <img src="{{ url_for('static', filename='images/product-placeholder.jpg') }}"
-               class="card-img-top" alt="Producto sin imagen">
-        {% endif %}
-        <div class="card-body">
-          <h5 class="card-title">{{ producto.nombre }}</h5>
-          <p class="card-text">{{ producto.descripcion }}</p>
-          <h2 class="card-text"><strong>${{ producto.precio }}</strong></h2>
-        </div>
+    <div class="card mb-4">
+      {% if producto.imagenes %}
+      <img
+        src="{{ url_for('rutas.mostrar_imagen', imagen_id=producto.imagenes[0].id) }}"
+        class="card-img-top"
+        alt="Imagen de {{ producto.nombre }}"
+      />
+      {% else %}
+      <img
+        src="{{ url_for('static', filename='images/product-placeholder.jpg') }}"
+        class="card-img-top"
+        alt="Producto sin imagen"
+      />
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{ producto.nombre }}</h5>
+        <p class="card-text">{{ producto.descripcion[:100] }}...</p>
+        <h4 class="text-success"><strong>${{ producto.precio }}</strong></h4>
+        <a href="{{ url_for('rutas.producto', producto_id=producto.id) }}" class="btn btn-primary mt-2">Ver más</a>
       </div>
     </div>
+  </div>
   {% endfor %}
 </div>
 
