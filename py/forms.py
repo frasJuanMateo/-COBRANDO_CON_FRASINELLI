@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, DecimalField, IntegerField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, NumberRange
+import email_validator
 from flask_wtf.file import FileField, FileAllowed, FileRequired, MultipleFileField
 
 class RegistroForm(FlaskForm):

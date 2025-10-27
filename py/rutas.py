@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, send_file, make_response, request
 from flask_login import login_user, logout_user, login_required, current_user
 from py.db import db
-from py.db import Usuario, Producto, Imagen
+from py.db import Usuario, Producto, Imagen, Carrito
 from werkzeug.utils import secure_filename
 from py.forms import RegistroForm, LoginForm, ProductoForm
 import io
