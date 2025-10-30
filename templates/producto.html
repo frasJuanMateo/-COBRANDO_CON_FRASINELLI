@@ -43,7 +43,7 @@
       <h3 class="text-success"><strong>${{ producto.precio }}</strong></h3>
       <p><strong>Stock disponible:</strong> {{ producto.stock }}</p>
 
-      {% if current_user.is_authenticated %}
+      {% if current_user.is_authenticated and producto.stock > 0  %}
         <form method="POST" action="{{ url_for('rutas.agregar_al_carrito', producto_id=producto.id) }}" onsubmit="">
           <div class="mb-3">
             <label for="cantidad" class="form-label">Cantidad:</label>
@@ -55,6 +55,8 @@
             <button type="submit" class="btn btn-primary">🛒 Añadir al carrito</button>
           {% endif %}
         </form>
+      {% elif current_user.is_authenticated %}
+        <p class="text-danger mt-4">Producto agotado.</p>
       {% else %}
         <p class="text-danger mt-4">Debes iniciar sesión para añadir productos al carrito.</p>
         <a href="{{ url_for('rutas.login') }}" class="btn btn-outline-primary">Iniciar sesión</a>

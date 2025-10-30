@@ -152,3 +152,42 @@ def eliminar_del_carrito(item_id):
     db.session.commit()
     flash("Producto eliminado del carrito.", "success")
     return redirect(url_for('rutas.carrito'))
+
+from flask import render_template, redirect, url_for, flash
+from flask_login import login_required, current_user
+
+@rutas.route('/checkout', methods=['GET', 'POST'])
+@login_required
+def checkout():
+    # Obtener todos los ítems del carrito del usuario actual
+    items = Carrito.query.filter_by(usuario_id=current_user.id).all()
+
+    if not items:
+        flash("Tu carrito está vacío.", "warning")
+        return redirect(url_for('rutas.carrito'))
+
+    total = sum(item.producto.precio * item.cantidad for item in items)
+
+    if request.method == 'POST':
+        # Simular compra: restar stock y vaciar carrito
+        for item in items:
+            producto = item.producto
+            if item.cantidad > producto.stock:
+                flash(f"No hay suficiente stock de {producto.nombre}.", "danger")
+                return redirect(url_for('rutas.carrito'))
+            
+            producto.stock -= item.cantidad
+            db.session.delete(item)  # eliminar del carrito
+
+        db.session.commit()
+
+        flash("Compra realizada con éxito 🎉", "success")
+        return redirect(url_for('rutas.confirmacion_compra'))
+
+    # Si GET, mostrar página de confirmación previa
+    return render_template('checkout.html', items=items, total=total, confirmacion=False)
+
+@rutas.route('/checkout/confirmacion_compra')
+@login_required
+def confirmacion_compra():
+    return render_template('checkout.html', confirmacion=True)

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% include 'header.html' %}
+{% block body %}
+
+<div>
+    {% if confirmacion == false %}
+        <div class="container mt-4">
+        <h2>🧾 Confirmar tu compra</h2>
+        <hr>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio unitario</th>
+                <th>Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.producto.nombre }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>${{ "%.2f"|format(item.producto.precio) }}</td>
+                <td>${{ "%.2f"|format(item.producto.precio * item.cantidad) }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th colspan="3" class="text-end">Total:</th>
+                <th>${{ "%.2f"|format(total) }}</th>
+            </tr>
+            </tfoot>
+        </table>
+
+        <form method="POST">
+            <button type="submit" class="btn btn-success">✅ Finalizar compra</button>
+            <a href="{{ url_for('rutas.carrito') }}" class="btn btn-secondary">Volver al carrito</a>
+        </form>
+        </div>
+    {% else %}
+
+        <div class="container mt-5 text-center">
+        <h2 class="mb-4">🎉 ¡Compra realizada con éxito!</h2>
+        <p>Gracias por tu compra, {{ current_user.nombre }}.</p>
+        <p>Recibirás un correo de confirmación (ficticio 😄).</p>
+        <hr>
+        <a href="{{ url_for('rutas.dashboard') }}" class="btn btn-primary mt-3">Volver al inicio</a>
+        <a href="{{ url_for('rutas.carrito') }}" class="btn btn-outline-secondary mt-3">Ver carrito</a>
+        </div>
+
+    {% endif %}
+</div>
+
+{% endblock %}
