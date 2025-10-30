@@ -96,8 +96,14 @@ def nuevo_producto():
 
 @rutas.route('/producto/<int:producto_id>')
 def producto(producto_id):
+    en_carrito = False
     producto = Producto.query.get_or_404(producto_id)
-    return render_template('producto.html', producto=producto)
+    items = Carrito.query.filter_by(usuario_id=current_user.id).all()
+    
+    if producto.id in [item.producto_id for item in items]:
+        en_carrito = True
+    
+    return render_template('producto.html', producto=producto, en_carrito=en_carrito)
 
 @rutas.route('/agregar_al_carrito/<int:producto_id>', methods=['POST'])
 @login_required
@@ -105,12 +111,11 @@ def agregar_al_carrito(producto_id):
     producto = Producto.query.get_or_404(producto_id)
     cantidad = int(request.form.get('cantidad', 1))
 
-    # Verificar stock
+    # Validar stock
     if cantidad > producto.stock:
         flash('No hay suficiente stock disponible.', 'danger')
-        return redirect(url_for('rutas.ver_producto', producto_id=producto.id))
+        return redirect(url_for('rutas.producto', producto_id=producto.id))
 
-    # Crear registro en la tabla carrito
     nuevo_item = Carrito(
         usuario_id=current_user.id,
         producto_id=producto.id,
@@ -120,4 +125,30 @@ def agregar_al_carrito(producto_id):
     db.session.commit()
 
     flash(f'Se añadió {cantidad} unidad(es) de "{producto.nombre}" al carrito.', 'success')
-    return redirect(url_for('rutas.ver_producto', producto_id=producto.id))
+    return redirect(url_for('rutas.producto', producto_id=producto.id))
+
+@rutas.route('/carrito')
+@login_required
+def carrito():
+    # Traer todos los ítems del carrito del usuario actual
+    items = Carrito.query.filter_by(usuario_id=current_user.id).all()
+    
+    # Calcular el total
+    total = sum(item.producto.precio * item.cantidad for item in items)
+
+    return render_template('lista_carrito.html', items=items, total=total)
+
+@rutas.route('/eliminar_del_carrito/<int:item_id>', methods=['POST'])
+@login_required
+def eliminar_del_carrito(item_id):
+    item = Carrito.query.get_or_404(item_id)
+
+    # Solo el usuario dueño del carrito puede eliminarlo
+    if item.usuario_id != current_user.id:
+        flash("No tienes permiso para eliminar este producto.", "danger")
+        return redirect(url_for('rutas.carrito'))
+
+    db.session.delete(item)
+    db.session.commit()
+    flash("Producto eliminado del carrito.", "success")
+    return redirect(url_for('rutas.carrito'))
