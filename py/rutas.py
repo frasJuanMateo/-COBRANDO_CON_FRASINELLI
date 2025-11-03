@@ -111,7 +111,12 @@ def agregar_al_carrito(producto_id):
     producto = Producto.query.get_or_404(producto_id)
     cantidad = int(request.form.get('cantidad', 1))
 
-    # Validar stock
+    # 🚫 Nuevo: Bloquear si el producto es del mismo usuario
+    if producto.usuario_id == current_user.id:
+        flash("❌ No puedes añadir a tu carrito un producto que tú mismo publicaste.", "danger")
+        return redirect(url_for('rutas.producto', producto_id=producto.id))
+
+    # Verificar stock
     if cantidad > producto.stock:
         flash('No hay suficiente stock disponible.', 'danger')
         return redirect(url_for('rutas.producto', producto_id=producto.id))
@@ -159,17 +164,21 @@ from flask_login import login_required, current_user
 @rutas.route('/checkout', methods=['GET', 'POST'])
 @login_required
 def checkout():
-    # Obtener todos los ítems del carrito del usuario actual
     items = Carrito.query.filter_by(usuario_id=current_user.id).all()
 
     if not items:
         flash("Tu carrito está vacío.", "warning")
         return redirect(url_for('rutas.carrito'))
 
+    # 🚫 Verificar si algún producto pertenece al usuario
+    for item in items:
+        if item.producto.usuario_id == current_user.id:
+            flash(f"No puedes comprar tu propio producto: {item.producto.nombre}", "danger")
+            return redirect(url_for('rutas.carrito'))
+
     total = sum(item.producto.precio * item.cantidad for item in items)
 
     if request.method == 'POST':
-        # Simular compra: restar stock y vaciar carrito
         for item in items:
             producto = item.producto
             if item.cantidad > producto.stock:
@@ -177,14 +186,11 @@ def checkout():
                 return redirect(url_for('rutas.carrito'))
             
             producto.stock -= item.cantidad
-            db.session.delete(item)  # eliminar del carrito
-
+            db.session.delete(item)
         db.session.commit()
 
         flash("Compra realizada con éxito 🎉", "success")
         return redirect(url_for('rutas.confirmacion_compra'))
-
-    # Si GET, mostrar página de confirmación previa
     return render_template('checkout.html', items=items, total=total, confirmacion=False)
 
 @rutas.route('/checkout/confirmacion_compra')
